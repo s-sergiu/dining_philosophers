@@ -17,6 +17,7 @@ struct s_data
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				number_of_eats;
+	int				counter;
 	struct s_philos	**philosophers;
 	pthread_mutex_t	*mutex;
 };
@@ -24,6 +25,7 @@ struct s_data
 struct s_philos 
 {
 	int			id;
+	int			*counter;
 	pthread_t	thread;
 	pthread_mutex_t *mutex;
 };
