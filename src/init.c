@@ -14,6 +14,7 @@ void	init_data(struct s_data **data, char **argv)
 		(*data)->number_of_eats = atoi(argv[5]);
 	write(1, "Data initialized\n", 17);
 	number = (*data)->number_of_philos;
+	(*data)->mutex = malloc(sizeof(pthread_mutex_t *));
 	(*data)->philosophers = malloc(sizeof(struct s_philos*) * number);
 }
 
@@ -25,8 +26,10 @@ void	*routine(void *arg)
 
 	while (1)
 	{
+		pthread_mutex_lock(philo->mutex);
 		printf("id is %d\n", philo->id);
-		sleep(2);
+		pthread_mutex_unlock(philo->mutex);
+		sleep(1);
 	}
 	return (NULL);
 }
@@ -36,25 +39,19 @@ void	init_philos(struct s_data *data)
 	int				i;
 	struct s_philos	**philos;
 
-	i = 0;
+	i = -1;
 	philos = data->philosophers;
-	while (i < data->number_of_philos)
+	while (++i < data->number_of_philos)
 	{
 		philos[i] = malloc(sizeof(struct s_philos));
 		philos[i]->id = i;	
 		philos[i]->thread = malloc(sizeof(pthread_t));	
-		i++;
+		philos[i]->mutex = data->mutex;	
 	}
-	i = 0;
-	while (i < data->number_of_philos)
-	{
+	i = -1;
+	while (++i < data->number_of_philos)
 		pthread_create(&philos[i]->thread, NULL, routine, philos[i]);
-		i++;
-	}
-	i = 0;
-	while (i < data->number_of_philos)
-	{
+	i = -1;
+	while (++i < data->number_of_philos)
 		pthread_join(philos[i]->thread, NULL);
-		i++;
-	}
 }

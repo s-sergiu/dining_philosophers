@@ -17,7 +17,7 @@ int main(int argc, char **argv)
 			init_data(&data, argv);
 			init_philos(data); 
 		}
-		printf("argv: %s\n", argv[1]);
+		printf("Input was %d\n", input_is_valid);
 	}
 	return(TRUE);
 }
