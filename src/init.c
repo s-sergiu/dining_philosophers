@@ -18,7 +18,7 @@ void	init_data(struct s_data **data, char **argv)
 	number = (*data)->number_of_philos;
 	(*data)->mutex = malloc(sizeof(pthread_mutex_t));
 	pthread_mutex_init((*data)->mutex, NULL);
-	(*data)->philosophers = malloc(sizeof(struct s_philos*) * number);
+	(*data)->philosophers = malloc(sizeof(struct s_philos) * number);
 	write(1, "Data initialized\n", 17);
 }
 
@@ -31,8 +31,11 @@ void	*routine(void *arg)
 	while (test < 10000)
 	{
 		test += 1;
+		printf("philo->id: %d\n", philo->id);
+		printf("test: %d\n", test);
 	}
 	pthread_mutex_unlock(philo->mutex);
+	test = 0;
 	printf("routine stopped\n");
 	return (NULL);
 }
@@ -40,22 +43,21 @@ void	*routine(void *arg)
 void	init_philos(struct s_data *data)
 {
 	int				i;
-	struct s_philos	**philos;
+	struct s_philos	*philos;
 
 	i = -1;
 	philos = data->philosophers;
 	while (++i < data->number_of_philos)
 	{
-		philos[i] = malloc(sizeof(struct s_philos));
-		philos[i]->id = i;	
-		philos[i]->thread = malloc(sizeof(pthread_t));	
-		philos[i]->mutex = data->mutex;	
-		philos[i]->counter = &data->counter;	
+		philos[i].id = i;	
+		philos[i].thread = malloc(sizeof(pthread_t));	
+		philos[i].mutex = data->mutex;	
+		philos[i].counter = &data->counter;	
 	}
 	i = -1;
 	while (++i < data->number_of_philos)
-		pthread_create(&philos[i]->thread, NULL, routine, philos[i]);
+		pthread_create(&philos[i].thread, NULL, routine, &philos[i]);
 	i = -1;
 	while (++i < data->number_of_philos)
-		pthread_join(philos[i]->thread, NULL);
+		pthread_join(philos[i].thread, NULL);
 }
