@@ -4,7 +4,6 @@
 int main(int argc, char **argv)
 {
 	struct s_data	*data;	
-	struct s_philos	*philos;
 	int				input_is_valid;
 
 	input_is_valid = FALSE;
@@ -16,7 +15,7 @@ int main(int argc, char **argv)
 		if (input_is_valid)
 		{
 			init_data(&data, argv);
-			init_philos(&philos, data); 
+			init_philos(data); 
 		}
 		printf("argv: %s\n", argv[1]);
 	}
