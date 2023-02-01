@@ -1,6 +1,8 @@
 
 #include "../include/philo.h"
 
+static int test;
+
 void	init_data(struct s_data **data, char **argv)
 {
 	int	number;
@@ -15,6 +17,7 @@ void	init_data(struct s_data **data, char **argv)
 		(*data)->number_of_eats = atoi(argv[5]);
 	number = (*data)->number_of_philos;
 	(*data)->mutex = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init((*data)->mutex, NULL);
 	(*data)->philosophers = malloc(sizeof(struct s_philos*) * number);
 	write(1, "Data initialized\n", 17);
 }
@@ -25,9 +28,9 @@ void	*routine(void *arg)
 
 	philo = arg;
 	pthread_mutex_lock(philo->mutex);
-	while (*(philo)->counter < 10000)
+	while (test < 10000)
 	{
-		*(philo)->counter += 1;
+		test += 1;
 	}
 	pthread_mutex_unlock(philo->mutex);
 	printf("routine stopped\n");
