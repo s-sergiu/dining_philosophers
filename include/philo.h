@@ -26,7 +26,7 @@ struct s_philos
 {
 	int			id;
 	int			*counter;
-	pthread_t	thread;
+	pthread_t	*thread;
 	pthread_mutex_t *mutex;
 };
 
