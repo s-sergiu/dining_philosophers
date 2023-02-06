@@ -34,5 +34,6 @@ void	parse_input(char **argv, int *flag);
 void	init_data(struct s_data **data, char **argv);
 void	init_philos(struct s_data *data);
 void	destroy_data(struct s_data *data);
+long	atoi_philo(char *string);
 
 #endif

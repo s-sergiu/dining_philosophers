@@ -17,10 +17,9 @@ int main(int argc, char **argv)
 		{
 			init_data(&data, argv);
 			init_philos(data); 
+			destroy_data(data);
 		}
 		printf("Input was %d\n", input_is_valid);
 	}
-	destroy_data(data);
-	system("leaks philo");
 	return(TRUE);
 }
