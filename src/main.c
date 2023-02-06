@@ -21,5 +21,6 @@ int main(int argc, char **argv)
 		printf("Input was %d\n", input_is_valid);
 	}
 	destroy_data(data);
+	system("leaks philo");
 	return(TRUE);
 }

@@ -50,14 +50,14 @@ void	init_philos(struct s_data *data)
 	while (++i < data->number_of_philos)
 	{
 		philos[i].id = i;	
-		philos[i].thread = (pthread_t)malloc(sizeof(pthread_t));	
+		philos[i].thread = (pthread_t *)malloc(sizeof(pthread_t));	
 		philos[i].mutex = data->mutex;	
 		philos[i].counter = &data->counter;	
 	}
 	i = -1;
 	while (++i < data->number_of_philos)
-		pthread_create(&philos[i].thread, NULL, routine, &philos[i]);
+		pthread_create(philos[i].thread, NULL, routine, &philos[i]);
 	i = -1;
 	while (++i < data->number_of_philos)
-		pthread_join(philos[i].thread, NULL);
+		pthread_join(*philos[i].thread, NULL);
 }
