@@ -1,8 +1,6 @@
 
 #include "../include/philo.h"
 
-static int test;
-
 void	init_data(struct s_data **data, char **argv)
 {
 	int	number;
@@ -13,6 +11,7 @@ void	init_data(struct s_data **data, char **argv)
 	(*data)->time_to_eat = atoi_philo(argv[3]);
 	(*data)->time_to_sleep = atoi_philo(argv[4]);
 	(*data)->counter = 0;
+	(*data)->number_of_eats = 0;
 	if (argv[5])
 		(*data)->number_of_eats = atoi(argv[5]);
 	number = (*data)->number_of_philos;
@@ -27,11 +26,15 @@ void	*routine(void *arg)
 	struct s_philos	*philo;
 
 	philo = arg;
-	pthread_mutex_lock(philo->mutex);
-	while (test < 500)
-		test += 1;
-	test = 0;
-	pthread_mutex_unlock(philo->mutex);
+	while (1)
+	{
+		eating(philo);
+		custom_time(200);
+		sleeping(philo);
+		custom_time(200);
+		thinking(philo);
+		custom_time(200);
+	}
 	printf("routine stopped\n");
 	return (NULL);
 }

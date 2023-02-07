@@ -31,11 +31,16 @@ struct s_philos
 };
 
 // main functions
+
+void	thinking(struct s_philos *philo);
+void	sleeping(struct s_philos *philo);
+void	eating(struct s_philos *philo);
 void	parse_input(char **argv, int *flag);
 void	init_data(struct s_data **data, char **argv);
 void	init_philos(struct s_data *data);
 void	destroy_data(struct s_data *data);
 long	atoi_philo(char *string);
+void	custom_time(int ms);
 
 // debug functions
 void	print_data(struct s_data *data);
