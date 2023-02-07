@@ -6,6 +6,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <sys/time.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -19,15 +20,16 @@ struct s_data
 	int				number_of_eats;
 	int				counter;
 	struct s_philos	*philosophers;
-	pthread_mutex_t	*mutex;
+	struct timeval	*t1;
 };
 
 struct s_philos 
 {
-	int			id;
-	int			*counter;
-	pthread_t	*thread;
-	pthread_mutex_t *mutex;
+	int				id;
+	int				*counter;
+	struct timeval	*t2;
+	pthread_t		*thread;
+	pthread_mutex_t	*mutex;
 };
 
 // main functions
