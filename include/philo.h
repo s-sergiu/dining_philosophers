@@ -20,17 +20,18 @@ struct s_data
 	int				number_of_eats;
 	int				counter;
 	struct s_philos	*philosophers;
-	struct timeval	t1;
+	pthread_mutex_t	global_mutex;
 };
 
 struct s_philos 
 {
 	int				id;
 	int				*counter;
-	struct timeval	t2;
+	int				fork;
 	pthread_t		*thread;
-	pthread_mutex_t	*mutex;
+	pthread_mutex_t	mutex;
 	struct s_data	*data;
+	int				number;
 };
 
 // main functions

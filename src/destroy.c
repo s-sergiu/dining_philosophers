@@ -10,10 +10,7 @@ void	destroy_data(struct s_data *data)
 		free(data->philosophers[i].thread);
 	i = -1;
 	while (++i < data->number_of_philos)
-	{
-		pthread_mutex_destroy(data->philosophers[i].mutex);
-		free(data->philosophers[i].mutex);
-	}
+		pthread_mutex_destroy(&data->philosophers[i].mutex);
 	free(data->philosophers);
 	free(data);
 }
