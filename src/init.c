@@ -25,8 +25,10 @@ void	*routine(void *arg)
 	struct s_philos	*philo;
 
 	philo = arg;
-	pthread_mutex_lock(&philo->data->global_mutex);
-	pthread_mutex_unlock(&philo->data->global_mutex);
+	if (pthread_mutex_lock(&philo->data->global_mutex) != 0)
+		printf("error\n");
+	if (pthread_mutex_unlock(&philo->data->global_mutex) != 0)
+		printf("error\n");
 	while (1)
 	{
 		eating(philo);
@@ -58,7 +60,8 @@ void	init_philos(struct s_data *data)
 	struct s_philos	*philos;
 
 	i = -1;
-	pthread_mutex_lock(&data->global_mutex);
+	if (pthread_mutex_lock(&data->global_mutex) != 0)
+		printf("error\n");
 	philos = data->philosophers;
 	print_data(data);
 	if (numbers_are_incorrect(data) == TRUE)
@@ -73,13 +76,18 @@ void	init_philos(struct s_data *data)
 		pthread_mutex_init(&philos[i].mutex, NULL);
 		philos[i].counter = &data->counter;	
 		philos[i].data = data;
+		if (i == 0)
+			philos[i].left_fork = &data->philosophers[data->number_of_philos - 1].fork;
+		else
+			philos[i].left_fork = &data->philosophers[i - 1].fork;
 		philos[i].fork = 0;
 		philos[i].number = data->number_of_philos;
 	}
 	i = -1;
 	while (++i < data->number_of_philos)
 		pthread_create(philos[i].thread, NULL, routine, &philos[i]);
-	pthread_mutex_unlock(&data->global_mutex);
+	if (pthread_mutex_unlock(&data->global_mutex) != 0)
+		printf("error\n");
 	i = -1;
 	while (++i < data->number_of_philos)
 		pthread_join(*philos[i].thread, NULL);
