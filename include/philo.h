@@ -18,9 +18,10 @@ struct s_data
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				number_of_eats;
-	int				counter;
 	struct s_philos	*philosophers;
 	pthread_mutex_t	global_mutex;
+	pthread_mutex_t	routine_mutex;
+	struct timeval	t1;
 };
 
 struct s_philos 
@@ -34,6 +35,7 @@ struct s_philos
 	pthread_mutex_t	*left_mutex;;
 	struct s_data	*data;
 	int				number;
+	struct timeval	t2;
 };
 
 // main functions

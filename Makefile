@@ -1,6 +1,6 @@
 NAME = philo
 CC = cc 
-FLAGS = -Wall -Werror -Wextra -g #-fsanitize=thread
+FLAGS = -Wall -Werror -Wextra -g -fsanitize=thread
 
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:src/%.c=obj/%.o)
