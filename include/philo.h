@@ -31,6 +31,7 @@ struct s_philos
 	int				fork;
 	pthread_t		*thread;
 	pthread_mutex_t	mutex;
+	pthread_mutex_t	*left_mutex;;
 	struct s_data	*data;
 	int				number;
 };

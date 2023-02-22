@@ -77,9 +77,15 @@ void	init_philos(struct s_data *data)
 		philos[i].counter = &data->counter;	
 		philos[i].data = data;
 		if (i == 0)
+		{
 			philos[i].left_fork = &data->philosophers[data->number_of_philos - 1].fork;
+			philos[i].left_mutex = &data->philosophers[data->number_of_philos - 1].mutex;
+		}
 		else
+		{
 			philos[i].left_fork = &data->philosophers[i - 1].fork;
+			philos[i].left_mutex = &data->philosophers[i - 1].mutex;
+		}
 		philos[i].fork = 0;
 		philos[i].number = data->number_of_philos;
 	}

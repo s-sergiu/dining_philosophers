@@ -4,16 +4,18 @@
 void	eating(struct s_philos *philo)
 {
 	int	id;
-	int	number;
 
 	id = philo->id;
-	number = philo->number;
-	if (pthread_mutex_lock(&philo->mutex) != 0)
+	if (pthread_mutex_lock(philo->left_mutex) != 0)
 		printf("mutex error\n");
 	printf("philo %d is grabbing %d [left] fork\n", id, id - 1);
-	(void)philo->left_fork;
+	*philo->left_fork = 1;
+	if (pthread_mutex_unlock(philo->left_mutex) != 0)
+		printf("mutex error\n");
+	if (pthread_mutex_lock(&philo->mutex) != 0)
+		printf("mutex error\n");
 	printf("philo %d is grabbing his [right] fork \n", id);
-	(void)philo->fork;
+	philo->fork = 1;
 	printf("%d is eating\n", id);
 	if (pthread_mutex_unlock(&philo->mutex) != 0)
 		printf("mutex error\n");
