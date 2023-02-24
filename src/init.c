@@ -1,6 +1,18 @@
 
 #include "../include/philo.h"
 
+void	mutex_lock(pthread_mutex_t *mutex)
+{
+	if (pthread_mutex_lock(mutex) != 0)
+		printf("Mutex failed to initialize\n");
+}
+
+void	mutex_unlock(pthread_mutex_t *mutex)
+{
+	if (pthread_mutex_unlock(mutex) != 0)
+		printf("Mutex failed to initialize\n");
+}
+
 void	init_data(struct s_data **data, char **argv)
 {
 	int	number;
@@ -28,25 +40,22 @@ void	*routine(void *arg)
 	long			elapsed;
 
 	philo = arg;
-	if (pthread_mutex_lock(&philo->data->global_mutex) != 0)
-		printf("Mutex failed to initialize\n");
-	if (pthread_mutex_unlock(&philo->data->global_mutex) != 0)
-		printf("Mutex failed to initialize\n");
-	gettimeofday(&philo->data->t1, NULL);
 	while (1)
 	{
+		mutex_lock(&philo->data->global_mutex);
+		mutex_unlock(&philo->data->global_mutex);
+		mutex_lock(&philo->mutex);
+		gettimeofday(&philo->data->t1, NULL);
+		mutex_unlock(&philo->mutex);
 		eating(philo);
-		if (pthread_mutex_lock(&philo->mutex) != 0)
-			printf("Mutex failed to initialize\n");
+		mutex_lock(&philo->mutex);
 		start = (philo->data->t1.tv_sec * 1000) + (philo->data->t1.tv_usec / 1000);
 		end = (philo->t2.tv_sec * 1000) + (philo->t2.tv_usec / 1000);
 		elapsed = end - start;
 		printf("elapsed %ld\n", elapsed);
-		if (pthread_mutex_unlock(&philo->mutex) != 0)
-			printf("Mutex failed to initialize\n");
+		mutex_unlock(&philo->mutex);
 		sleeping(philo);
 		thinking(philo);
-
 	}
 	printf("routine stopped\n");
 	return (NULL);
@@ -99,6 +108,7 @@ void	init_philos(struct s_data *data)
 			philos[i].left_mutex = &data->philosophers[i - 1].mutex;
 		}
 		philos[i].fork = 0;
+		philos[i].fed = 0;
 		philos[i].number = data->number_of_philos;
 	}
 	i = -1;

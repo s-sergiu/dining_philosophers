@@ -30,6 +30,7 @@ struct s_philos
 	int				*counter;
 	int				*left_fork;
 	int				fork;
+	int				fed;
 	pthread_t		*thread;
 	pthread_mutex_t	mutex;
 	pthread_mutex_t	*left_mutex;;
@@ -49,6 +50,8 @@ void	init_philos(struct s_data *data);
 void	destroy_data(struct s_data *data);
 long	atoi_philo(char *string);
 void	custom_time(int ms);
+void	mutex_lock(pthread_mutex_t *mutex);
+void	mutex_unlock(pthread_mutex_t *mutex);
 
 // debug functions
 void	print_data(struct s_data *data);
