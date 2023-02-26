@@ -32,28 +32,53 @@ void	init_data(struct s_data **data, char **argv)
 	write(1, "Data initialized\n", 17);
 }
 
+void	*watch_dead(void *arg)
+{
+	struct s_watcher	*watcher;
+
+	watcher = arg;
+	while (1)
+	{
+		sleep(100);
+		printf("watcher\n");
+	}
+	return (NULL);
+}
+
+void	ft_sleep(struct s_data *data, int ms)
+{
+	long			initial_time;
+
+	//get current time;
+	initial_time = get_time(data);
+	while (get_time(data) - initial_time < ms)
+		usleep(200);
+}
+
+long	get_time(struct s_data *data)
+{
+	long			current_time;
+	long			start_time;
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	start_time = (data->t1.tv_sec * 1000) + (data->t1.tv_usec / 1000);
+	current_time = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+	return (current_time - start_time);
+
+}
+
 void	*routine(void *arg)
 {
 	struct s_philos	*philo;
-	long			start;
-	long			end;
-	long			elapsed;
 
 	philo = arg;
+	mutex_lock(&philo->data->global_mutex);
+	mutex_unlock(&philo->data->global_mutex);
+	gettimeofday(&philo->data->t1, NULL);
 	while (1)
 	{
-		mutex_lock(&philo->data->global_mutex);
-		mutex_unlock(&philo->data->global_mutex);
-		mutex_lock(&philo->mutex);
-		gettimeofday(&philo->data->t1, NULL);
-		mutex_unlock(&philo->mutex);
 		eating(philo);
-		mutex_lock(&philo->mutex);
-		start = (philo->data->t1.tv_sec * 1000) + (philo->data->t1.tv_usec / 1000);
-		end = (philo->t2.tv_sec * 1000) + (philo->t2.tv_usec / 1000);
-		elapsed = end - start;
-		printf("elapsed %ld\n", elapsed);
-		mutex_unlock(&philo->mutex);
 		sleeping(philo);
 		thinking(philo);
 	}
@@ -94,7 +119,6 @@ void	init_philos(struct s_data *data)
 	while (++i < data->number_of_philos)
 	{
 		philos[i].id = i + 1;	
-		philos[i].thread = (pthread_t *)malloc(sizeof(pthread_t));	
 		pthread_mutex_init(&philos[i].mutex, NULL);
 		philos[i].data = data;
 		if (i == 0)
@@ -113,10 +137,12 @@ void	init_philos(struct s_data *data)
 	}
 	i = -1;
 	while (++i < data->number_of_philos)
-		pthread_create(philos[i].thread, NULL, routine, &philos[i]);
+		pthread_create(&philos[i].thread, NULL, routine, &philos[i]);
+	pthread_create(&data->watcher.thread, NULL, watch_dead, &data->watcher);
+	pthread_detach(data->watcher.thread);
 	if (pthread_mutex_unlock(&data->global_mutex) != 0)
 		printf("Mutex failed to initialize\n");
 	i = -1;
 	while (++i < data->number_of_philos)
-		pthread_join(*philos[i].thread, NULL);
+		pthread_join(philos[i].thread, NULL);
 }

@@ -11,17 +11,23 @@
 #define TRUE 1
 #define FALSE 0
 
+struct s_watcher 
+{
+	pthread_t		thread;
+};
+
 struct s_data 
 {
-	int				number_of_philos;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
-	int				number_of_eats;
-	struct s_philos	*philosophers;
-	pthread_mutex_t	global_mutex;
-	pthread_mutex_t	routine_mutex;
-	struct timeval	t1;
+	int					number_of_philos;
+	int					time_to_die;
+	int					time_to_eat;
+	int					time_to_sleep;
+	int					number_of_eats;
+	struct s_watcher	watcher;
+	struct s_philos		*philosophers;
+	pthread_mutex_t		global_mutex;
+	pthread_mutex_t		routine_mutex;
+	struct timeval		t1;
 };
 
 struct s_philos 
@@ -31,12 +37,13 @@ struct s_philos
 	int				*left_fork;
 	int				fork;
 	int				fed;
-	pthread_t		*thread;
+	pthread_t		thread;
 	pthread_mutex_t	mutex;
 	pthread_mutex_t	*left_mutex;;
 	struct s_data	*data;
 	int				number;
 	struct timeval	t2;
+	long			time2;
 };
 
 // main functions
@@ -52,6 +59,9 @@ long	atoi_philo(char *string);
 void	custom_time(int ms);
 void	mutex_lock(pthread_mutex_t *mutex);
 void	mutex_unlock(pthread_mutex_t *mutex);
+void	ft_sleep(struct s_data *data, int ms);
+long	get_time(struct s_data *data);
+void	printer_function(struct s_philos *philo, int state);
 
 // debug functions
 void	print_data(struct s_data *data);
