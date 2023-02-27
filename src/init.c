@@ -120,19 +120,13 @@ void	init_philos(struct s_data *data)
 	{
 		philos[i].id = i + 1;	
 		pthread_mutex_init(&philos[i].mutex, NULL);
+		pthread_mutex_init(&philos[i].sleep_mutex, NULL);
+		pthread_mutex_init(&philos[i].think_mutex, NULL);
 		philos[i].data = data;
 		if (i == 0)
-		{
-			philos[i].left_fork = &data->philosophers[data->number_of_philos - 1].fork;
 			philos[i].left_mutex = &data->philosophers[data->number_of_philos - 1].mutex;
-		}
 		else
-		{
-			philos[i].left_fork = &data->philosophers[i - 1].fork;
 			philos[i].left_mutex = &data->philosophers[i - 1].mutex;
-		}
-		philos[i].fork = 0;
-		philos[i].fed = 0;
 		philos[i].number = data->number_of_philos;
 	}
 	i = -1;

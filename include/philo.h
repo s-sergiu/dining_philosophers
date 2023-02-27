@@ -33,11 +33,9 @@ struct s_data
 struct s_philos 
 {
 	int				id;
-	int				*counter;
-	int				*left_fork;
-	int				fork;
-	int				fed;
 	pthread_t		thread;
+	pthread_mutex_t	sleep_mutex;
+	pthread_mutex_t	think_mutex;
 	pthread_mutex_t	mutex;
 	pthread_mutex_t	*left_mutex;;
 	struct s_data	*data;
