@@ -29,9 +29,6 @@ void	eating(struct s_philos *philo)
 
 void	sleeping(struct s_philos *philo)
 {
-	int	id;
-
-	id = philo->id;
 	mutex_lock(&philo->mutex);
 	printer_function(philo, 2);
 	ft_sleep(philo->data, philo->data->time_to_sleep);
@@ -40,10 +37,6 @@ void	sleeping(struct s_philos *philo)
 
 void	thinking(struct s_philos *philo)
 {
-	int	id;
-
-	id = philo->id;
-
 	mutex_lock(&philo->mutex);
 	printer_function(philo, 0);
 	mutex_unlock(&philo->mutex);
