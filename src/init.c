@@ -37,6 +37,7 @@ void	*watch_dead(void *arg)
 	struct s_watcher	*watcher;
 
 	watcher = arg;
+	(void)watcher;
 	while (1)
 	{
 		sleep(100);
