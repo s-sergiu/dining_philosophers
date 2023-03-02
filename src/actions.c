@@ -1,6 +1,29 @@
 
 #include "../include/philo.h"
 
+void	register_last_meal(struct s_philos **philo)
+{
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	(*philo)->last_meal = ((*philo)->data->t1.tv_sec * 1000) + ((*philo)->data->t1.tv_usec / 1000);
+}
+
+void	check_for_dead(struct s_philos *philo)
+{
+	struct timeval	time;
+	long			current_time;
+
+	gettimeofday(&time, NULL);
+	
+	current_time = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+	if (philo->last_meal - current_time > philo->data->time_to_die)
+	{
+		printf("i'm here\n");
+		philo->is_alive = 0;
+	}
+}
+
 void	eating(struct s_philos *philo)
 {
 	int	id;
@@ -11,6 +34,7 @@ void	eating(struct s_philos *philo)
 		mutex_lock(philo->left_mutex);
 		mutex_lock(&philo->mutex);
 		printer_function(philo, 1);
+		register_last_meal(&philo);
 		ft_sleep(philo->data, philo->data->time_to_eat);
 		mutex_unlock(&philo->mutex);
 		mutex_unlock(philo->left_mutex);
@@ -20,6 +44,7 @@ void	eating(struct s_philos *philo)
 		mutex_lock(&philo->mutex);
 		mutex_lock(philo->left_mutex);
 		printer_function(philo, 1);
+		register_last_meal(&philo);
 		ft_sleep(philo->data, philo->data->time_to_eat);
 		mutex_unlock(philo->left_mutex);
 		mutex_unlock(&philo->mutex);

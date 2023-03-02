@@ -76,11 +76,14 @@ void	*routine(void *arg)
 	mutex_lock(&philo->data->global_mutex);
 	mutex_unlock(&philo->data->global_mutex);
 	gettimeofday(&philo->data->t1, NULL);
-	while (1)
+	while (philo->is_alive == 1)
 	{
 		eating(philo);
+		check_for_dead(philo);
 		sleeping(philo);
+		check_for_dead(philo);
 		thinking(philo);
+		check_for_dead(philo);
 	}
 	printf("routine stopped\n");
 	return (NULL);
@@ -123,6 +126,7 @@ void	init_philos(struct s_data *data)
 		pthread_mutex_init(&philos[i].sleep_mutex, NULL);
 		pthread_mutex_init(&philos[i].think_mutex, NULL);
 		philos[i].data = data;
+		philos[i].is_alive = 1;
 		if (i == 0)
 			philos[i].left_mutex = &data->philosophers[data->number_of_philos - 1].mutex;
 		else

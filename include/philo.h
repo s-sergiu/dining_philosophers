@@ -28,6 +28,7 @@ struct s_data
 	pthread_mutex_t		global_mutex;
 	pthread_mutex_t		routine_mutex;
 	struct timeval		t1;
+	int					philo_dead;
 };
 
 struct s_philos 
@@ -42,6 +43,8 @@ struct s_philos
 	int				number;
 	struct timeval	t2;
 	long			time2;
+	long			last_meal;
+	int				is_alive;
 };
 
 // main functions
@@ -60,6 +63,7 @@ void	mutex_unlock(pthread_mutex_t *mutex);
 void	ft_sleep(struct s_data *data, int ms);
 long	get_time(struct s_data *data);
 void	printer_function(struct s_philos *philo, int state);
+void	check_for_dead(struct s_philos *philo);
 
 // debug functions
 void	print_data(struct s_data *data);

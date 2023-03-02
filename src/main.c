@@ -8,13 +8,13 @@ void	printer_function(struct s_philos *philo, int state)
 	id = philo->id;
 	if (state == 1)
 	{
-		printf("\e[1;32m %ld\t%d has taken a fork\e[0m\n", get_time(philo->data), id);
-		printf("\e[1;32m %ld\t%d is eating\e[0m\n", get_time(philo->data), id);
+		printf("%ld\t%d has taken a fork\n", get_time(philo->data), id);
+		printf("%ld\t%d is eating\n", get_time(philo->data), id);
 	}
 	else if (state == 2)
-		printf("\e[1;35m %ld\t%d is sleeping\e[0m\n", get_time(philo->data), id);
+		printf("%ld\t%d is sleeping\n", get_time(philo->data), id);
 	else
-		printf("\e[1;34m %ld\t%d is thinking\e[0m\n", get_time(philo->data), id);
+		printf("%ld\t%d is thinking\n", get_time(philo->data), id);
 		
 }
 
