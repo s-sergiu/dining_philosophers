@@ -6,7 +6,7 @@ void	register_last_meal(struct s_philos **philo)
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
-	(*philo)->last_meal = ((*philo)->data->t1.tv_sec * 1000) + ((*philo)->data->t1.tv_usec / 1000);
+	(*philo)->last_meal = (time.tv_sec * 1000) + (time.tv_usec / 1000);
 }
 
 void	check_for_dead(struct s_philos *philo)
@@ -17,11 +17,8 @@ void	check_for_dead(struct s_philos *philo)
 	gettimeofday(&time, NULL);
 	
 	current_time = (time.tv_sec * 1000) + (time.tv_usec / 1000);
-	if (philo->last_meal - current_time > philo->data->time_to_die)
-	{
-		printf("i'm here\n");
+	if (current_time - philo->last_meal > philo->data->time_to_die)
 		philo->is_alive = 0;
-	}
 }
 
 void	eating(struct s_philos *philo)

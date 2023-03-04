@@ -79,13 +79,24 @@ void	*routine(void *arg)
 	while (philo->is_alive == 1)
 	{
 		eating(philo);
+		mutex_lock(&philo->mutex);
 		check_for_dead(philo);
+		if (philo->is_alive == 0)
+			break;
+		mutex_unlock(&philo->mutex);
 		sleeping(philo);
+		mutex_lock(&philo->mutex);
 		check_for_dead(philo);
+		if (philo->is_alive == 0)
+			break;
+		mutex_unlock(&philo->mutex);
 		thinking(philo);
+		mutex_lock(&philo->mutex);
 		check_for_dead(philo);
+		if (philo->is_alive == 0)
+			break;
+		mutex_unlock(&philo->mutex);
 	}
-	printf("routine stopped\n");
 	return (NULL);
 }
 
