@@ -29,31 +29,21 @@ void	init_data(struct s_data **data, char **argv)
 	(*data)->philosophers = malloc(sizeof(struct s_philos) * number);
 	pthread_mutex_init(&(*data)->global_mutex, NULL);
 	pthread_mutex_init(&(*data)->routine_mutex, NULL);
-	write(1, "Data initialized\n", 17);
 }
 
-void	*watch_dead(void *arg)
-{
-	struct s_watcher	*watcher;
-
-	watcher = arg;
-	(void)watcher;
-	while (1)
-	{
-		sleep(100);
-		printf("watcher\n");
-	}
-	return (NULL);
-}
-
-void	ft_sleep(struct s_data *data, int ms)
+void	ft_sleep(struct s_data *data, int ms, struct s_philos *philo)
 {
 	long			initial_time;
 
-	//get current time;
 	initial_time = get_time(data);
 	while (get_time(data) - initial_time < ms)
+	{
+		if (is_dead(philo) == TRUE)
+			break;
+		if (philo->is_alive == 0)
+			break;
 		usleep(200);
+	}
 }
 
 long	get_time(struct s_data *data)
@@ -77,26 +67,43 @@ void	*routine(void *arg)
 	mutex_lock(&philo->data->global_mutex);
 	mutex_unlock(&philo->data->global_mutex);
 	gettimeofday(&philo->data->t1, NULL);
+	if (philo->left_mutex == NULL)
+	{
+		printf("%ld\t%d has died\n", get_time(philo->data), philo->id);
+		return (NULL);
+	}
 	while (philo->is_alive == 1)
 	{
-		eating(philo);
-		mutex_lock(&philo->mutex);
-		check_for_dead(philo);
-		if (philo->is_alive == 0)
+		if (is_dead(philo) == TRUE)
 			break;
-		mutex_unlock(&philo->mutex);
-		sleeping(philo);
-		mutex_lock(&philo->mutex);
-		check_for_dead(philo);
-		if (philo->is_alive == 0)
+		mutex_lock(&philo->data->routine_mutex);
+		if (philo->is_alive == 1)
+		{
+			mutex_unlock(&philo->data->routine_mutex);
+			eating(philo);
+		}
+		if (is_dead(philo) == TRUE)
 			break;
-		mutex_unlock(&philo->mutex);
-		thinking(philo);
-		mutex_lock(&philo->mutex);
-		check_for_dead(philo);
-		if (philo->is_alive == 0)
+		mutex_lock(&philo->data->routine_mutex);
+		if (philo->is_alive == 1)
+		{
+			mutex_unlock(&philo->data->routine_mutex);
+			sleeping(philo);
+		}
+		else 
 			break;
-		mutex_unlock(&philo->mutex);
+		if (is_dead(philo) == TRUE)
+			break;
+		mutex_lock(&philo->data->routine_mutex);
+		if (philo->is_alive == 1)
+		{
+			mutex_unlock(&philo->data->routine_mutex);
+			thinking(philo);
+		}
+		else 
+			break;
+		if (is_dead(philo) == TRUE)
+			break;
 	}
 	return (NULL);
 }
@@ -125,7 +132,6 @@ void	init_philos(struct s_data *data)
 	if (pthread_mutex_lock(&data->global_mutex) != 0)
 		printf("Mutex failed to initialize\n");
 	philos = data->philosophers;
-	print_data(data);
 	if (numbers_are_incorrect(data) == TRUE)
 	{
 		printf("Numbers entered are not correct...\n");
@@ -139,17 +145,18 @@ void	init_philos(struct s_data *data)
 		pthread_mutex_init(&philos[i].think_mutex, NULL);
 		philos[i].data = data;
 		philos[i].is_alive = 1;
-		if (i == 0)
+		philos[i].last_meal = 0;
+		if (i == 0 && data->number_of_philos != 1)
 			philos[i].left_mutex = &data->philosophers[data->number_of_philos - 1].mutex;
-		else
+		else if (data->number_of_philos != 1)
 			philos[i].left_mutex = &data->philosophers[i - 1].mutex;
+		else 
+			philos[i].left_mutex = NULL;
 		philos[i].number = data->number_of_philos;
 	}
 	i = -1;
 	while (++i < data->number_of_philos)
 		pthread_create(&philos[i].thread, NULL, routine, &philos[i]);
-	pthread_create(&data->watcher.thread, NULL, watch_dead, &data->watcher);
-	pthread_detach(data->watcher.thread);
 	if (pthread_mutex_unlock(&data->global_mutex) != 0)
 		printf("Mutex failed to initialize\n");
 	i = -1;

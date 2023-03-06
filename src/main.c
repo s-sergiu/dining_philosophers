@@ -38,9 +38,7 @@ int main(int argc, char **argv)
 			init_philos(data); 
 			//destroy_data(data);
 		}
-		if (input_is_valid)
-			printf("Input was valid\n");
-		else
+		if (!input_is_valid)
 			printf("Input was invalid\n");
 	}
 	return(TRUE);

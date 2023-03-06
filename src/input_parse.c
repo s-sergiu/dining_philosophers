@@ -29,14 +29,7 @@ void	parse_input(char **argv, int *flag)
 
 	i = 0;
 	while(argv[++i])
-	{
 		if (is_not_valid_number(argv[i]))
-		{
-			write(1, "FALSE\n", 6);
 			return ;
-		}
-		else
-			write(1, "TRUE\n", 5);
-	}
 	*flag = TRUE;
 }

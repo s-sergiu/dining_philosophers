@@ -1,4 +1,3 @@
-
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -29,6 +28,7 @@ struct s_data
 	pthread_mutex_t		routine_mutex;
 	struct timeval		t1;
 	int					philo_dead;
+	long				starting_time;
 };
 
 struct s_philos 
@@ -60,10 +60,11 @@ long	atoi_philo(char *string);
 void	custom_time(int ms);
 void	mutex_lock(pthread_mutex_t *mutex);
 void	mutex_unlock(pthread_mutex_t *mutex);
-void	ft_sleep(struct s_data *data, int ms);
+void	ft_sleep(struct s_data *data, int ms, struct s_philos *philo);
 long	get_time(struct s_data *data);
 void	printer_function(struct s_philos *philo, int state);
-void	check_for_dead(struct s_philos *philo);
+void	register_last_meal(struct s_philos **philo);
+int		is_dead(struct s_philos *philo);
 
 // debug functions
 void	print_data(struct s_data *data);
