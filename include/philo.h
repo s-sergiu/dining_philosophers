@@ -60,6 +60,8 @@ long	get_time(struct s_data *data);
 void	printer_function(struct s_philos *philo, int state);
 void	register_last_meal(struct s_philos **philo);
 int		is_dead(struct s_philos *philo, int flag);
+int		numbers_are_incorrect(struct s_data *data);
+void	look_for_dead(struct s_data *data, struct s_philos *philos);
 
 // debug functions
 void	print_data(struct s_data *data);

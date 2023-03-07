@@ -15,6 +15,28 @@ long	get_time(struct s_data *data)
 	return (current_time - start_time);
 }
 
+int	philos_are_alive(struct s_philos *philo)
+{
+	mutex_lock(&philo->data->routine_mutex);
+	if (philo->data->philo_dead == 1)
+		return (FALSE);
+	mutex_unlock(&philo->data->routine_mutex);
+	eating(philo);
+	if (philo->fed == philo->data->number_of_eats)
+		return (FALSE);
+	mutex_lock(&philo->data->routine_mutex);
+	if (philo->data->philo_dead == 1)
+		return (FALSE);
+	mutex_unlock(&philo->data->routine_mutex);
+	sleeping(philo);
+	mutex_lock(&philo->data->routine_mutex);
+	if (philo->data->philo_dead == 1)
+		return (FALSE);
+	mutex_unlock(&philo->data->routine_mutex);
+	thinking(philo);
+	return (TRUE);
+}
+
 void	*routine(void *arg)
 {
 	struct s_philos	*philo;
@@ -34,56 +56,18 @@ void	*routine(void *arg)
 		usleep(200);
 	while (1)
 	{
-		mutex_lock(&philo->data->routine_mutex);
-		if (philo->data->philo_dead == 1)
+		if (!philos_are_alive(philo))
 			break ;
-		mutex_unlock(&philo->data->routine_mutex);
-		eating(philo);
-		if (philo->fed == philo->data->number_of_eats)
-			break ;
-		mutex_lock(&philo->data->routine_mutex);
-		if (philo->data->philo_dead == 1)
-			break ;
-		mutex_unlock(&philo->data->routine_mutex);
-		sleeping(philo);
-		mutex_lock(&philo->data->routine_mutex);
-		if (philo->data->philo_dead == 1)
-			break ;
-		mutex_unlock(&philo->data->routine_mutex);
-		thinking(philo);
 	}
 	mutex_unlock(&philo->data->routine_mutex);
 	return (NULL);
 }
 
-int	numbers_are_incorrect(struct s_data *data)
+void	create_philos(struct s_data *data, struct s_philos *philos)
 {
-	if (data->number_of_philos == -1)
-		return (TRUE);
-	if (data->time_to_die < 60)
-		return (TRUE);
-	if (data->time_to_eat < 60)
-		return (TRUE);
-	if (data->time_to_sleep < 60)
-		return (TRUE);
-	if (data->number_of_eats < 0)
-		return (TRUE);
-	return (FALSE);
-}
-
-void	init_philos(struct s_data *data)
-{
-	int				i;
-	struct s_philos	*philos;
+	int	i;
 
 	i = -1;
-	mutex_lock(&data->global_mutex);
-	philos = data->philosophers;
-	if (numbers_are_incorrect(data) == TRUE)
-	{
-		printf("Numbers entered are not correct...\n");
-		return ;
-	}
 	while (++i < data->number_of_philos)
 	{
 		philos[i].id = i + 1;
@@ -101,6 +85,21 @@ void	init_philos(struct s_data *data)
 			philos[i].left_mutex = NULL;
 		philos[i].number = data->number_of_philos;
 	}
+}
+
+void	init_philos(struct s_data *data)
+{
+	int				i;
+	struct s_philos	*philos;
+
+	mutex_lock(&data->global_mutex);
+	philos = data->philosophers;
+	if (numbers_are_incorrect(data) == TRUE)
+	{
+		printf("Numbers entered are not correct...\n");
+		return ;
+	}
+	create_philos(data, philos);
 	i = -1;
 	while (++i < data->number_of_philos)
 		pthread_create(&philos[i].thread, NULL, routine, &philos[i]);
@@ -108,19 +107,6 @@ void	init_philos(struct s_data *data)
 	i = -1;
 	while (++i < data->number_of_philos)
 		pthread_join(philos[i].thread, NULL);
-	while (1)
-	{
-		i = 0;
-		while (++i < data->number_of_philos)
-		{
-			if (data->number_of_eats && philos[i].fed > 0)
-				break ;
-			if (is_dead(&philos[i], 1) == TRUE)
-				break ;
-			if (i == data->number_of_philos - 1)
-				i = -1;
-		}
-		break ;
-	}
+	look_for_dead(data, philos);
 	return ;
 }

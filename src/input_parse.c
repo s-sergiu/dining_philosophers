@@ -33,3 +33,18 @@ void	parse_input(char **argv, int *flag)
 			return ;
 	*flag = TRUE;
 }
+
+int	numbers_are_incorrect(struct s_data *data)
+{
+	if (data->number_of_philos == -1)
+		return (TRUE);
+	if (data->time_to_die < 60)
+		return (TRUE);
+	if (data->time_to_eat < 60)
+		return (TRUE);
+	if (data->time_to_sleep < 60)
+		return (TRUE);
+	if (data->number_of_eats < 0)
+		return (TRUE);
+	return (FALSE);
+}
