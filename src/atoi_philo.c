@@ -6,7 +6,7 @@
 /*   By: ssergiu <ssergiu@student.42heilbronn.de>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 20:32:00 by ssergiu           #+#    #+#             */
-/*   Updated: 2023/03/07 20:32:02 by ssergiu          ###   ########.fr       */
+/*   Updated: 2023/03/07 22:49:56 by ssergiu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	init_data(struct s_data **data, char **argv)
 		(*data)->number_of_eats = 0;
 	number = (*data)->number_of_philos;
 	(*data)->philo_dead = 0;
+	(*data)->print_flag = 1;
 	(*data)->philosophers = malloc(sizeof(struct s_philos) * number);
 	pthread_mutex_init(&(*data)->global_mutex, NULL);
 	pthread_mutex_init(&(*data)->routine_mutex, NULL);

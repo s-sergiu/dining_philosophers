@@ -6,7 +6,7 @@
 /*   By: ssergiu <ssergiu@student.42heilbronn.de>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 20:30:37 by ssergiu           #+#    #+#             */
-/*   Updated: 2023/03/07 20:30:39 by ssergiu          ###   ########.fr       */
+/*   Updated: 2023/03/07 22:49:10 by ssergiu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ struct s_data
 	pthread_mutex_t		gettime_mutex;
 	struct timeval		t1;
 	int					philo_dead;
+	int					print_flag;
 	long				starting_time;
 };
 

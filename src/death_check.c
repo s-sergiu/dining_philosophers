@@ -6,7 +6,7 @@
 /*   By: ssergiu <ssergiu@student.42heilbronn.de>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 20:32:10 by ssergiu           #+#    #+#             */
-/*   Updated: 2023/03/07 22:37:57 by ssergiu          ###   ########.fr       */
+/*   Updated: 2023/03/07 22:50:25 by ssergiu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ void	look_for_dead(struct s_data *data, struct s_philos *philos)
 		i = 0;
 		while (++i < data->number_of_philos)
 		{
-			if (is_dead(&philos[i], 1) == TRUE)
+			if (is_dead(&philos[i], data->print_flag) == TRUE)
 				break ;
 			if (i == data->number_of_philos - 1)
 				i = -1;
