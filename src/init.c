@@ -22,9 +22,10 @@ void	init_data(struct s_data **data, char **argv)
 	(*data)->time_to_die = atoi_philo(argv[2]);
 	(*data)->time_to_eat = atoi_philo(argv[3]);
 	(*data)->time_to_sleep = atoi_philo(argv[4]);
-	(*data)->number_of_eats = 0;
 	if (argv[5])
 		(*data)->number_of_eats = atoi(argv[5]);
+	else
+		(*data)->number_of_eats = 0;
 	number = (*data)->number_of_philos;
 	(*data)->philosophers = malloc(sizeof(struct s_philos) * number);
 	pthread_mutex_init(&(*data)->global_mutex, NULL);
@@ -36,9 +37,18 @@ void	ft_sleep(struct s_data *data, int ms, struct s_philos *philo)
 	long			initial_time;
 
 	initial_time = get_time(data);
+	if (data->philo_dead == 1)
+		return ;
 	while (get_time(data) - initial_time < ms)
 	{
-		if (is_dead(philo) == TRUE)
+		mutex_lock(&data->routine_mutex);
+		if (data->philo_dead == 1)
+		{
+			mutex_unlock(&data->routine_mutex);
+			break ;
+		}
+		mutex_unlock(&data->routine_mutex);
+		if (is_dead(philo, 0) == TRUE)
 			break;
 		usleep(200);
 	}
@@ -79,6 +89,8 @@ void	*routine(void *arg)
 			break;
 		mutex_unlock(&philo->data->routine_mutex);
 		eating(philo);
+		if (philo->fed == philo->data->number_of_eats)
+			break;
 		mutex_lock(&philo->data->routine_mutex);
 		if (philo->data->philo_dead == 1)
 			break;
@@ -104,7 +116,7 @@ int	numbers_are_incorrect(struct s_data *data)
 		return (TRUE);
 	if (data->time_to_sleep < 60)
 		return (TRUE);
-	if (data->number_of_eats == -1)
+	if (data->number_of_eats < 0)
 		return (TRUE);
 	return (FALSE);
 }
@@ -115,8 +127,7 @@ void	init_philos(struct s_data *data)
 	struct s_philos	*philos;
 
 	i = -1;
-	if (pthread_mutex_lock(&data->global_mutex) != 0)
-		printf("Mutex failed to initialize\n");
+	mutex_lock(&data->global_mutex);
 	philos = data->philosophers;
 	if (numbers_are_incorrect(data) == TRUE)
 	{
@@ -130,8 +141,8 @@ void	init_philos(struct s_data *data)
 		pthread_mutex_init(&philos[i].sleep_mutex, NULL);
 		pthread_mutex_init(&philos[i].think_mutex, NULL);
 		philos[i].data = data;
-		philos[i].is_alive = 1;
 		philos[i].last_meal = 0;
+		philos[i].fed = 0;
 		if (i == 0 && data->number_of_philos != 1)
 			philos[i].left_mutex = &data->philosophers[data->number_of_philos - 1].mutex;
 		else if (data->number_of_philos != 1)
@@ -143,9 +154,23 @@ void	init_philos(struct s_data *data)
 	i = -1;
 	while (++i < data->number_of_philos)
 		pthread_create(&philos[i].thread, NULL, routine, &philos[i]);
-	if (pthread_mutex_unlock(&data->global_mutex) != 0)
-		printf("Mutex failed to initialize\n");
+	mutex_unlock(&data->global_mutex);
 	i = -1;
 	while (++i < data->number_of_philos)
 		pthread_join(philos[i].thread, NULL);
+	while (1)
+	{
+		i = 0;
+		while (++i < data->number_of_philos)
+		{
+			if (data->number_of_eats && philos[i].fed > 0)
+				break;
+			if (is_dead(&philos[i], 1) == TRUE)
+				break ;
+			if (i == data->number_of_philos - 1)
+				i = -1;
+		}
+		break;
+	}
+	return ;
 }

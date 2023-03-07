@@ -44,7 +44,7 @@ struct s_philos
 	struct timeval	t2;
 	long			time2;
 	long			last_meal;
-	int				is_alive;
+	long			fed;
 };
 
 // main functions
@@ -64,7 +64,7 @@ void	ft_sleep(struct s_data *data, int ms, struct s_philos *philo);
 long	get_time(struct s_data *data);
 void	printer_function(struct s_philos *philo, int state);
 void	register_last_meal(struct s_philos **philo);
-int		is_dead(struct s_philos *philo);
+int		is_dead(struct s_philos *philo, int flag);
 
 // debug functions
 void	print_data(struct s_data *data);
