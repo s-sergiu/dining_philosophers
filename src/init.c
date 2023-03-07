@@ -6,7 +6,7 @@
 /*   By: ssergiu <ssergiu@student.42heilbronn.de>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 20:30:32 by ssergiu           #+#    #+#             */
-/*   Updated: 2023/03/07 23:24:19 by ssergiu          ###   ########.fr       */
+/*   Updated: 2023/03/07 23:42:26 by ssergiu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int	philos_are_alive(struct s_philos *philo)
 	if (philo->fed == philo->data->number_of_eats)
 	{
 		philo->data->print_flag = 0;
-		mutex_unlock(&philo->data->routine_mutex);
 		return (FALSE);
 	}
 	mutex_unlock(&philo->data->routine_mutex);
