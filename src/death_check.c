@@ -6,7 +6,11 @@ void	register_last_meal(struct s_philos **philo)
 	struct timeval	time;
 
 	if ((*philo)->last_meal == 0)
+	{
+		mutex_lock(&(*philo)->data->gettime_mutex);
 		(*philo)->last_meal = ((*philo)->data->t1.tv_sec * 1000) + ((*philo)->data->t1.tv_usec / 1000);
+		mutex_unlock(&(*philo)->data->gettime_mutex);
+	}
 	else
 	{
 		gettimeofday(&time, NULL);

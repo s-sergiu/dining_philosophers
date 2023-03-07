@@ -49,9 +49,9 @@ void	*routine(void *arg)
 	mutex_unlock(&philo->data->gettime_mutex);
 	if (philo->id %2 == 0)
 		usleep(200);
-	while (1)
+	while (TRUE)
 	{
-		if (!philos_are_alive(philo))
+		if (philos_are_alive(philo) == FALSE)
 			break ;
 	}
 	mutex_unlock(&philo->data->routine_mutex);
