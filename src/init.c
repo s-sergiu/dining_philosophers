@@ -40,8 +40,6 @@ void	ft_sleep(struct s_data *data, int ms, struct s_philos *philo)
 	{
 		if (is_dead(philo) == TRUE)
 			break;
-		if (philo->is_alive == 0)
-			break;
 		usleep(200);
 	}
 }
@@ -64,47 +62,35 @@ void	*routine(void *arg)
 	struct s_philos	*philo;
 
 	philo = arg;
-	mutex_lock(&philo->data->global_mutex);
-	mutex_unlock(&philo->data->global_mutex);
-	gettimeofday(&philo->data->t1, NULL);
 	if (philo->left_mutex == NULL)
 	{
 		printf("%ld\t%d has died\n", get_time(philo->data), philo->id);
 		return (NULL);
 	}
-	while (philo->is_alive == 1)
+	mutex_lock(&philo->data->global_mutex);
+	mutex_unlock(&philo->data->global_mutex);
+	gettimeofday(&philo->data->t1, NULL);
+	if (philo->id % 2 == 0)
+		usleep(200);
+	while (1)
 	{
-		if (is_dead(philo) == TRUE)
-			break;
 		mutex_lock(&philo->data->routine_mutex);
-		if (philo->is_alive == 1)
-		{
-			mutex_unlock(&philo->data->routine_mutex);
-			eating(philo);
-		}
-		if (is_dead(philo) == TRUE)
+		if (philo->data->philo_dead == 1)
 			break;
+		mutex_unlock(&philo->data->routine_mutex);
+		eating(philo);
 		mutex_lock(&philo->data->routine_mutex);
-		if (philo->is_alive == 1)
-		{
-			mutex_unlock(&philo->data->routine_mutex);
-			sleeping(philo);
-		}
-		else 
+		if (philo->data->philo_dead == 1)
 			break;
-		if (is_dead(philo) == TRUE)
-			break;
+		mutex_unlock(&philo->data->routine_mutex);
+		sleeping(philo);
 		mutex_lock(&philo->data->routine_mutex);
-		if (philo->is_alive == 1)
-		{
-			mutex_unlock(&philo->data->routine_mutex);
-			thinking(philo);
-		}
-		else 
+		if (philo->data->philo_dead == 1)
 			break;
-		if (is_dead(philo) == TRUE)
-			break;
+		mutex_unlock(&philo->data->routine_mutex);
+		thinking(philo);
 	}
+	mutex_unlock(&philo->data->routine_mutex);
 	return (NULL);
 }
 
