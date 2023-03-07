@@ -6,7 +6,7 @@
 /*   By: ssergiu <ssergiu@student.42heilbronn.de>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 20:32:00 by ssergiu           #+#    #+#             */
-/*   Updated: 2023/03/07 23:10:50 by ssergiu          ###   ########.fr       */
+/*   Updated: 2023/03/07 23:19:10 by ssergiu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,13 @@ void	ft_sleep(struct s_data *data, int ms, struct s_philos *philo)
 	long			initial_time;
 
 	initial_time = get_time(data);
+	mutex_lock(&data->routine_mutex);
 	if (data->philo_dead == 1)
+	{
+		mutex_unlock(&data->routine_mutex);
 		return ;
+	}
+	mutex_unlock(&data->routine_mutex);
 	while (get_time(data) - initial_time < ms)
 	{
 		mutex_lock(&data->routine_mutex);
