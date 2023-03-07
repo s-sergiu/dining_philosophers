@@ -39,7 +39,7 @@ void	*routine(void *arg)
 	philo = arg;
 	if (philo->left_mutex == NULL)
 	{
-		printf("%ld\t%d has died\n", get_time(philo->data), philo->id);
+		printf("0\t%d has died\n", philo->id);
 		return (NULL);
 	}
 	mutex_lock(&philo->data->global_mutex);
