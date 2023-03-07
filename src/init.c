@@ -6,7 +6,7 @@
 /*   By: ssergiu <ssergiu@student.42heilbronn.de>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 20:30:32 by ssergiu           #+#    #+#             */
-/*   Updated: 2023/03/07 22:48:58 by ssergiu          ###   ########.fr       */
+/*   Updated: 2023/03/07 23:05:08 by ssergiu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	*routine(void *arg)
 	gettimeofday(&philo->data->t1, NULL);
 	mutex_unlock(&philo->data->gettime_mutex);
 	if (philo->id % 2 == 0)
-		usleep(200);
+		usleep(philo->data->time_to_eat);
 	while (TRUE)
 	{
 		if (philos_are_alive(philo) == FALSE)
