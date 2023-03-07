@@ -38,6 +38,7 @@ void	sleeping(struct s_philos *philo)
 {
 	printer_function(philo, 2);
 	ft_sleep(philo->data, philo->data->time_to_sleep, philo);
+	thinking(philo);
 }
 
 void	thinking(struct s_philos *philo)
