@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssergiu <ssergiu@student.42heilbronn.de>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/07 20:30:32 by ssergiu           #+#    #+#             */
+/*   Updated: 2023/03/07 20:32:29 by ssergiu          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/philo.h"
 
@@ -39,7 +50,8 @@ void	*routine(void *arg)
 	philo = arg;
 	if (philo->left_mutex == NULL)
 	{
-		printf("0\t%d has died\n", philo->id);
+		printf("0\t%d has taken a fork\n", philo->id);
+		printf("%d\t%d has died\n", philo->data->time_to_die + 1, philo->id);
 		return (NULL);
 	}
 	mutex_lock(&philo->data->global_mutex);
@@ -47,7 +59,7 @@ void	*routine(void *arg)
 	mutex_lock(&philo->data->gettime_mutex);
 	gettimeofday(&philo->data->t1, NULL);
 	mutex_unlock(&philo->data->gettime_mutex);
-	if (philo->id %2 == 0)
+	if (philo->id % 2 == 0)
 		usleep(200);
 	while (TRUE)
 	{

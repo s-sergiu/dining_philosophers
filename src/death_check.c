@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   death_check.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssergiu <ssergiu@student.42heilbronn.de>   +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/07 20:32:10 by ssergiu           #+#    #+#             */
+/*   Updated: 2023/03/07 20:32:59 by ssergiu          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../include/philo.h"
 
@@ -8,7 +19,8 @@ void	register_last_meal(struct s_philos **philo)
 	if ((*philo)->last_meal == 0)
 	{
 		mutex_lock(&(*philo)->data->gettime_mutex);
-		(*philo)->last_meal = ((*philo)->data->t1.tv_sec * 1000) + ((*philo)->data->t1.tv_usec / 1000);
+		(*philo)->last_meal = ((*philo)->data->t1.tv_sec * 1000)
+			+ ((*philo)->data->t1.tv_usec / 1000);
 		mutex_unlock(&(*philo)->data->gettime_mutex);
 	}
 	else
