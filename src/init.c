@@ -31,6 +31,7 @@ void	init_data(struct s_data **data, char **argv)
 	(*data)->philosophers = malloc(sizeof(struct s_philos) * number);
 	pthread_mutex_init(&(*data)->global_mutex, NULL);
 	pthread_mutex_init(&(*data)->routine_mutex, NULL);
+	pthread_mutex_init(&(*data)->gettime_mutex, NULL);
 }
 
 void	ft_sleep(struct s_data *data, int ms, struct s_philos *philo)
@@ -50,7 +51,7 @@ void	ft_sleep(struct s_data *data, int ms, struct s_philos *philo)
 		}
 		mutex_unlock(&data->routine_mutex);
 		if (is_dead(philo, 0) == TRUE)
-			break;
+			break ;
 		usleep(200);
 	}
 }
@@ -62,10 +63,11 @@ long	get_time(struct s_data *data)
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
+	mutex_lock(&data->gettime_mutex);
 	start_time = (data->t1.tv_sec * 1000) + (data->t1.tv_usec / 1000);
+	mutex_unlock(&data->gettime_mutex);
 	current_time = (time.tv_sec * 1000) + (time.tv_usec / 1000);
 	return (current_time - start_time);
-
 }
 
 void	*routine(void *arg)
@@ -80,26 +82,28 @@ void	*routine(void *arg)
 	}
 	mutex_lock(&philo->data->global_mutex);
 	mutex_unlock(&philo->data->global_mutex);
+	mutex_lock(&philo->data->gettime_mutex);
 	gettimeofday(&philo->data->t1, NULL);
+	mutex_unlock(&philo->data->gettime_mutex);
 	if (philo->id % 2 == 0)
 		usleep(200);
 	while (1)
 	{
 		mutex_lock(&philo->data->routine_mutex);
 		if (philo->data->philo_dead == 1)
-			break;
+			break ;
 		mutex_unlock(&philo->data->routine_mutex);
 		eating(philo);
 		if (philo->fed == philo->data->number_of_eats)
-			break;
+			break ;
 		mutex_lock(&philo->data->routine_mutex);
 		if (philo->data->philo_dead == 1)
-			break;
+			break ;
 		mutex_unlock(&philo->data->routine_mutex);
 		sleeping(philo);
 		mutex_lock(&philo->data->routine_mutex);
 		if (philo->data->philo_dead == 1)
-			break;
+			break ;
 		mutex_unlock(&philo->data->routine_mutex);
 		thinking(philo);
 	}
@@ -137,7 +141,7 @@ void	init_philos(struct s_data *data)
 	}
 	while (++i < data->number_of_philos)
 	{
-		philos[i].id = i + 1;	
+		philos[i].id = i + 1;
 		pthread_mutex_init(&philos[i].mutex, NULL);
 		pthread_mutex_init(&philos[i].sleep_mutex, NULL);
 		pthread_mutex_init(&philos[i].think_mutex, NULL);
@@ -145,10 +149,10 @@ void	init_philos(struct s_data *data)
 		philos[i].last_meal = 0;
 		philos[i].fed = 0;
 		if (i == 0 && data->number_of_philos != 1)
-			philos[i].left_mutex = &data->philosophers[data->number_of_philos - 1].mutex;
+			philos[i].left_mutex = &philos[data->number_of_philos - 1].mutex;
 		else if (data->number_of_philos != 1)
 			philos[i].left_mutex = &data->philosophers[i - 1].mutex;
-		else 
+		else
 			philos[i].left_mutex = NULL;
 		philos[i].number = data->number_of_philos;
 	}
@@ -165,13 +169,13 @@ void	init_philos(struct s_data *data)
 		while (++i < data->number_of_philos)
 		{
 			if (data->number_of_eats && philos[i].fed > 0)
-				break;
+				break ;
 			if (is_dead(&philos[i], 1) == TRUE)
 				break ;
 			if (i == data->number_of_philos - 1)
 				i = -1;
 		}
-		break;
+		break ;
 	}
 	return ;
 }

@@ -7,15 +7,10 @@
 # include <stdlib.h>
 # include <sys/time.h>
 
-#define TRUE 1
-#define FALSE 0
+# define TRUE 1
+# define FALSE 0
 
-struct s_watcher 
-{
-	pthread_t		thread;
-};
-
-struct s_data 
+struct s_data
 {
 	int					number_of_philos;
 	int					time_to_die;
@@ -26,19 +21,20 @@ struct s_data
 	struct s_philos		*philosophers;
 	pthread_mutex_t		global_mutex;
 	pthread_mutex_t		routine_mutex;
+	pthread_mutex_t		gettime_mutex;
 	struct timeval		t1;
 	int					philo_dead;
 	long				starting_time;
 };
 
-struct s_philos 
+struct s_philos
 {
 	int				id;
 	pthread_t		thread;
 	pthread_mutex_t	sleep_mutex;
 	pthread_mutex_t	think_mutex;
 	pthread_mutex_t	mutex;
-	pthread_mutex_t	*left_mutex;;
+	pthread_mutex_t	*left_mutex;
 	struct s_data	*data;
 	int				number;
 	struct timeval	t2;
