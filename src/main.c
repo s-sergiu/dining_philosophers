@@ -6,7 +6,7 @@
 /*   By: ssergiu <ssergiu@student.42heilbronn.de>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 20:30:36 by ssergiu           #+#    #+#             */
-/*   Updated: 2023/03/07 20:32:46 by ssergiu          ###   ########.fr       */
+/*   Updated: 2023/03/07 23:29:18 by ssergiu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,9 @@ int	main(int argc, char **argv)
 	data = NULL;
 	input_is_valid = FALSE;
 	if (argc != 5 && argc != 6)
-		write(1, "Usage\n", 6);
+		write(1, "Usage: ./philo [nb_of_philos]"
+			"[time_to_die] [time_to_eat] "
+			"[time_to_sleep] [number_of_times_should_eat]\n", 103);
 	else
 	{
 		parse_input(argv, &input_is_valid);
