@@ -5,8 +5,13 @@ void	register_last_meal(struct s_philos **philo)
 {
 	struct timeval	time;
 
-	gettimeofday(&time, NULL);
-	(*philo)->last_meal = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+	if ((*philo)->last_meal == 0)
+		(*philo)->last_meal = ((*philo)->data->t1.tv_sec * 1000) + ((*philo)->data->t1.tv_usec / 1000);
+	else
+	{
+		gettimeofday(&time, NULL);
+		(*philo)->last_meal = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+	}
 }
 
 int	is_dead_from_the_beginning(struct s_philos *philo, int flag)

@@ -29,11 +29,6 @@ int	philos_are_alive(struct s_philos *philo)
 		return (FALSE);
 	mutex_unlock(&philo->data->routine_mutex);
 	sleeping(philo);
-	mutex_lock(&philo->data->routine_mutex);
-	if (philo->data->philo_dead == 1)
-		return (FALSE);
-	mutex_unlock(&philo->data->routine_mutex);
-	thinking(philo);
 	return (TRUE);
 }
 
@@ -52,7 +47,7 @@ void	*routine(void *arg)
 	mutex_lock(&philo->data->gettime_mutex);
 	gettimeofday(&philo->data->t1, NULL);
 	mutex_unlock(&philo->data->gettime_mutex);
-	if (philo->id % 2 == 0)
+	if (philo->id %2 == 0)
 		usleep(200);
 	while (1)
 	{
@@ -103,8 +98,8 @@ void	init_philos(struct s_data *data)
 	i = -1;
 	while (++i < data->number_of_philos)
 		pthread_create(&philos[i].thread, NULL, routine, &philos[i]);
-	mutex_unlock(&data->global_mutex);
 	i = -1;
+	mutex_unlock(&data->global_mutex);
 	while (++i < data->number_of_philos)
 		pthread_join(philos[i].thread, NULL);
 	look_for_dead(data, philos);

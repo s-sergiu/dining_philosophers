@@ -7,10 +7,14 @@ void	eating(struct s_philos *philo)
 	{
 		mutex_lock(philo->left_mutex);
 		mutex_lock(&philo->mutex);
-		printer_function(philo, 1);
+		if (is_dead(philo, 0) == FALSE)
+			printer_function(philo, 1);
+		else 
+			return ;
 		register_last_meal(&philo);
 		philo->fed++;
 		ft_sleep(philo->data, philo->data->time_to_eat, philo);
+		register_last_meal(&philo);
 		mutex_unlock(&philo->mutex);
 		mutex_unlock(philo->left_mutex);
 	}
@@ -18,7 +22,10 @@ void	eating(struct s_philos *philo)
 	{
 		mutex_lock(&philo->mutex);
 		mutex_lock(philo->left_mutex);
-		printer_function(philo, 1);
+		if (is_dead(philo, 0) == FALSE)
+			printer_function(philo, 1);
+		else 
+			return ;
 		register_last_meal(&philo);
 		philo->fed++;
 		ft_sleep(philo->data, philo->data->time_to_eat, philo);
@@ -36,5 +43,4 @@ void	sleeping(struct s_philos *philo)
 void	thinking(struct s_philos *philo)
 {
 	printer_function(philo, 0);
-	ft_sleep(philo->data, 20, philo);
 }
