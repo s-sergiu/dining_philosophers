@@ -9,4 +9,3 @@ void	print_data(struct s_data *data)
 	printf("time to sleep %d\n", data->time_to_sleep);
 	printf("number of eats %d\n", data->number_of_eats);
 }
-

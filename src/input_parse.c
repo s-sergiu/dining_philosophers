@@ -8,7 +8,7 @@ int	ft_isdigit(char c)
 	return (0);
 }
 
-int	is_not_valid_number(char* argv)
+int	is_not_valid_number(char *argv)
 {
 	int	i;	
 

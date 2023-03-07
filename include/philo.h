@@ -17,7 +17,6 @@ struct s_data
 	int					time_to_eat;
 	int					time_to_sleep;
 	int					number_of_eats;
-	struct s_watcher	watcher;
 	struct s_philos		*philosophers;
 	pthread_mutex_t		global_mutex;
 	pthread_mutex_t		routine_mutex;
