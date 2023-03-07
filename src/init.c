@@ -27,6 +27,7 @@ void	init_data(struct s_data **data, char **argv)
 	else
 		(*data)->number_of_eats = 0;
 	number = (*data)->number_of_philos;
+	(*data)->philo_dead = 0;
 	(*data)->philosophers = malloc(sizeof(struct s_philos) * number);
 	pthread_mutex_init(&(*data)->global_mutex, NULL);
 	pthread_mutex_init(&(*data)->routine_mutex, NULL);
